@@ -1,3 +1,5 @@
+import {allPass, compose, propEq} from 'ramda';
+
 /**
  * @file Домашка по FP ч. 1
  * 
@@ -13,14 +15,16 @@
  * Если какие либо функции написаны руками (без использования библиотек) это не является ошибкой
  */
 
-// 1. Красная звезда, зеленый квадрат, все остальные белые.
-export const validateFieldN1 = ({star, square, triangle, circle}) => {
-    if (triangle !== 'white' || circle !== 'white') {
-        return false;
-    }
+const isRedStar = propEq('star', 'red');
+const isGreenSquare = propEq('square', 'green');
+const isWhiteCircle = propEq('circle', 'white');
+const isWhiteTriangle = propEq('triangle', 'white');
 
-    return star === 'red' && square === 'green';
-};
+const isRedStarAndGreenSquareOtherWhite = allPass([isRedStar, isGreenSquare, isWhiteCircle, isWhiteTriangle]);
+
+// 1. Красная звезда, зеленый квадрат, все остальные белые.
+export const validateFieldN1 = (obj) => isRedStarAndGreenSquareOtherWhite(obj);
+
 
 // 2. Как минимум две фигуры зеленые.
 export const validateFieldN2 = () => false;
