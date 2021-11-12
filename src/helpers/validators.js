@@ -1,4 +1,4 @@
-import { allPass, compose, equals, prop, values, filter, gt } from 'ramda';
+import { allPass, compose, equals, prop, values, filter, gt, not, anyPass } from 'ramda';
 
 /**
  * @file Домашка по FP ч. 1
@@ -28,11 +28,19 @@ const isOrange = equals('orange');
 const isWhite = equals('white');
 
 const isGreaterThenOne = number => gt(number, 1);
+const isGreateThanTwo = number => gt(number, 2);
 const countGreen = compose(getLength, filter(isGreen), values);
 const countRed = compose(getLength, filter(isRed), values);
 const countBlue = compose(getLength, filter(isBlue), values);
+const countOrange = compose(getLength, filter(isOrange), values);
 
 const countBlueIsEqualCountRed = (figures) => equals(countBlue(figures), countRed(figures));
+
+const minThreeGreen = compose(isGreateThanTwo, countGreen);
+const minThreeRed= compose(isGreateThanTwo, countRed);
+const minThreeBlue = compose(isGreateThanTwo, countBlue);
+const minThreeOrange = compose(isGreateThanTwo, countOrange);
+const minTreeSameColor = anyPass([minThreeGreen, minThreeRed, minThreeBlue, minThreeOrange])
 
 const isRedStar = compose(isRed, getStar);
 const isGreenSquare = compose(isGreen, getSquare);
@@ -54,7 +62,7 @@ export const validateFieldN3 = countBlueIsEqualCountRed;
 export const validateFieldN4 = allPass([isBlueCircle, isRedStar, isOrangeSquare]);
 
 // 5. Три фигуры одного любого цвета кроме белого (четыре фигуры одного цвета – это тоже true).
-export const validateFieldN5 = () => false;
+export const validateFieldN5 = minTreeSameColor;
 
 // 6. Две зеленые фигуры (одна из них треугольник), еще одна любая красная.
 export const validateFieldN6 = () => false;
