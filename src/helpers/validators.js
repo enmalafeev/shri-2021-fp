@@ -1,4 +1,4 @@
-import {allPass, compose, equals, prop, propEq} from 'ramda';
+import { allPass, compose, equals, prop, values, filter, gt } from 'ramda';
 
 /**
  * @file Домашка по FP ч. 1
@@ -15,39 +15,43 @@ import {allPass, compose, equals, prop, propEq} from 'ramda';
  * Если какие либо функции написаны руками (без использования библиотек) это не является ошибкой
  */
 
-const isRedStar = propEq('star', 'red');
-const isGreenSquare = propEq('square', 'green');
-const isWhiteCircle = propEq('circle', 'white');
-const isWhiteTriangle = propEq('triangle', 'white');
-
 const getStar = prop('star');
 const getSquare = prop('square');
 const getCircle = prop('circle');
 const getTriangle = prop('triangle');
+const getLength = prop('length');
 
-const isRed = color => equals(color, 'red');
-const isGreen = color => equals(color, 'green');
-const isBlue = color => equals(color, 'blue');
-const isOrange = color => equals(color, 'orange');
-const isWhite = color => equals(color, 'white');
+const isRed = equals('red');
+const isGreen = equals('green');
+const isBlue = equals('blue');
+const isOrange = equals('orange');
+const isWhite = equals('white');
 
-const isGreenStar = compose(isGreen, getStar);
-const isGreenCircle = compose(isGreen, getCircle);
-const isGreenTriangle = compose(isGreen, getTriangle);
+const isGreaterThenOne = number => gt(number, 1);
+const countGreen = compose(getLength, filter(isGreen), values);
+const countRed = compose(getLength, filter(isRed), values);
+const countBlue = compose(getLength, filter(isBlue), values);
 
-const isRedStarAndGreenSquareOtherWhite = allPass([isRedStar, isGreenSquare, isWhiteCircle, isWhiteTriangle]);
+const countBlueIsEqualCountRed = (figures) => equals(countBlue(figures), countRed(figures));
+
+const isRedStar = compose(isRed, getStar);
+const isGreenSquare = compose(isGreen, getSquare);
+const isBlueCircle = compose(isBlue, getCircle);
+const isOrangeSquare = compose(isOrange, getSquare);
+const isWhiteCircle = compose(isWhite, getCircle);
+const isWhiteTriangle = compose(isWhite, getTriangle);
 
 // 1. Красная звезда, зеленый квадрат, все остальные белые.
-export const validateFieldN1 = (obj) => isRedStarAndGreenSquareOtherWhite(obj);
+export const validateFieldN1 = allPass([isRedStar, isGreenSquare, isWhiteCircle, isWhiteTriangle]);
 
 // 2. Как минимум две фигуры зеленые.
-export const validateFieldN2 = (obj) => allGreen(obj);
+export const validateFieldN2 = compose(isGreaterThenOne, countGreen);
 
 // 3. Количество красных фигур равно кол-ву синих.
-export const validateFieldN3 = () => false;
+export const validateFieldN3 = countBlueIsEqualCountRed;
 
 // 4. Синий круг, красная звезда, оранжевый квадрат
-export const validateFieldN4 = () => false;
+export const validateFieldN4 = allPass([isBlueCircle, isRedStar, isOrangeSquare]);
 
 // 5. Три фигуры одного любого цвета кроме белого (четыре фигуры одного цвета – это тоже true).
 export const validateFieldN5 = () => false;
@@ -62,8 +66,7 @@ export const validateFieldN7 = () => false;
 export const validateFieldN8 = () => false;
 
 // 9. Все фигуры зеленые.
-const allGreen = allPass([isGreenStar, isGreenCircle, isGreenTriangle, isGreenSquare]);
-export const validateFieldN9 = (obj) => allGreen(obj);
+export const validateFieldN9 = {};
 
 // 10. Треугольник и квадрат одного цвета (не белого)
 export const validateFieldN10 = () => false;
