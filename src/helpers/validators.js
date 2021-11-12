@@ -78,7 +78,7 @@ export const validateFieldN7 = compose(all(isOrange), values);
 export const validateFieldN8 = () => false;
 
 // 9. Все фигуры зеленые.
-export const validateFieldN9 = {};
+export const validateFieldN9 = compose(all(isGreen), values);
 
 // 10. Треугольник и квадрат одного цвета (не белого)
 export const validateFieldN10 = () => false;
