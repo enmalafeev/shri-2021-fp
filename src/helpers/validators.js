@@ -1,4 +1,4 @@
-import {allPass, compose, propEq} from 'ramda';
+import {allPass, compose, equals, prop, propEq} from 'ramda';
 
 /**
  * @file Домашка по FP ч. 1
@@ -20,14 +20,28 @@ const isGreenSquare = propEq('square', 'green');
 const isWhiteCircle = propEq('circle', 'white');
 const isWhiteTriangle = propEq('triangle', 'white');
 
+const getStar = prop('star');
+const getSquare = prop('square');
+const getCircle = prop('circle');
+const getTriangle = prop('triangle');
+
+const isRed = color => equals(color, 'red');
+const isGreen = color => equals(color, 'green');
+const isBlue = color => equals(color, 'blue');
+const isOrange = color => equals(color, 'orange');
+const isWhite = color => equals(color, 'white');
+
+const isGreenStar = compose(isGreen, getStar);
+const isGreenCircle = compose(isGreen, getCircle);
+const isGreenTriangle = compose(isGreen, getTriangle);
+
 const isRedStarAndGreenSquareOtherWhite = allPass([isRedStar, isGreenSquare, isWhiteCircle, isWhiteTriangle]);
 
 // 1. Красная звезда, зеленый квадрат, все остальные белые.
 export const validateFieldN1 = (obj) => isRedStarAndGreenSquareOtherWhite(obj);
 
-
 // 2. Как минимум две фигуры зеленые.
-export const validateFieldN2 = () => false;
+export const validateFieldN2 = (obj) => allGreen(obj);
 
 // 3. Количество красных фигур равно кол-ву синих.
 export const validateFieldN3 = () => false;
@@ -48,7 +62,8 @@ export const validateFieldN7 = () => false;
 export const validateFieldN8 = () => false;
 
 // 9. Все фигуры зеленые.
-export const validateFieldN9 = () => false;
+const allGreen = allPass([isGreenStar, isGreenCircle, isGreenTriangle, isGreenSquare]);
+export const validateFieldN9 = (obj) => allGreen(obj);
 
 // 10. Треугольник и квадрат одного цвета (не белого)
 export const validateFieldN10 = () => false;
