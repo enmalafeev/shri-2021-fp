@@ -1,4 +1,4 @@
-import { allPass, compose, equals, prop, values, filter, gt, all, anyPass, map } from 'ramda';
+import { allPass, compose, equals, prop, values, filter, gt, all, anyPass, not } from 'ramda';
 
 /**
  * @file Домашка по FP ч. 1
@@ -45,6 +45,7 @@ const minThreeOrange = compose(isGreateThanTwo, countOrange);
 const minTreeSameColor = anyPass([minThreeGreen, minThreeRed, minThreeBlue, minThreeOrange])
 
 const isRedStar = compose(isRed, getStar);
+const isWhiteStar = compose(isWhite, getStar);
 const isGreenSquare = compose(isGreen, getSquare);
 const isGreenTriangle = compose(isGreen, getTriangle);
 const isBlueCircle = compose(isBlue, getCircle);
@@ -75,7 +76,7 @@ export const validateFieldN6 = allPass([minTwoGreen, isGreenTriangle, isOneRed])
 export const validateFieldN7 = compose(all(isOrange), values);
 
 // 8. Не красная и не белая звезда.
-export const validateFieldN8 = () => false;
+export const validateFieldN8 = compose(not, anyPass([isRedStar, isWhiteStar]));
 
 // 9. Все фигуры зеленые.
 export const validateFieldN9 = compose(all(isGreen), values);
