@@ -36,6 +36,7 @@ const countBlue = compose(getLength, filter(isBlue), values);
 const countOrange = compose(getLength, filter(isOrange), values);
 
 const countBlueIsEqualCountRed = (figures) => equals(countBlue(figures), countRed(figures));
+const squareAndTriangleIsSameColor = (figures) => equals(getSquare(figures), getTriangle(figures));
 
 const minTwoGreen = compose(isGreaterThenOne, countGreen);
 const minThreeGreen = compose(isGreateThanTwo, countGreen);
@@ -53,6 +54,8 @@ const isOrangeSquare = compose(isOrange, getSquare);
 const isWhiteCircle = compose(isWhite, getCircle);
 const isWhiteTriangle = compose(isWhite, getTriangle);
 const isOneRed = compose(equalOne, countRed);
+const isNotWhiteSquare = compose(not, isWhite, getSquare);
+const isNotWhiteTriangle = compose(not, isWhite, getTriangle);
 
 // 1. Красная звезда, зеленый квадрат, все остальные белые.
 export const validateFieldN1 = allPass([isRedStar, isGreenSquare, isWhiteCircle, isWhiteTriangle]);
@@ -82,4 +85,4 @@ export const validateFieldN8 = compose(not, anyPass([isRedStar, isWhiteStar]));
 export const validateFieldN9 = compose(all(isGreen), values);
 
 // 10. Треугольник и квадрат одного цвета (не белого)
-export const validateFieldN10 = () => false;
+export const validateFieldN10 = allPass([isNotWhiteSquare, isNotWhiteTriangle, squareAndTriangleIsSameColor]);
