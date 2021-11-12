@@ -29,6 +29,7 @@ const isWhite = equals('white');
 
 const isGreaterThenOne = number => gt(number, 1);
 const isGreateThanTwo = number => gt(number, 2);
+const equalOne = number => equals(number, 1);
 const countGreen = compose(getLength, filter(isGreen), values);
 const countRed = compose(getLength, filter(isRed), values);
 const countBlue = compose(getLength, filter(isBlue), values);
@@ -36,6 +37,7 @@ const countOrange = compose(getLength, filter(isOrange), values);
 
 const countBlueIsEqualCountRed = (figures) => equals(countBlue(figures), countRed(figures));
 
+const minTwoGreen = compose(isGreaterThenOne, countGreen);
 const minThreeGreen = compose(isGreateThanTwo, countGreen);
 const minThreeRed= compose(isGreateThanTwo, countRed);
 const minThreeBlue = compose(isGreateThanTwo, countBlue);
@@ -44,10 +46,12 @@ const minTreeSameColor = anyPass([minThreeGreen, minThreeRed, minThreeBlue, minT
 
 const isRedStar = compose(isRed, getStar);
 const isGreenSquare = compose(isGreen, getSquare);
+const isGreenTriangle = compose(isGreen, getTriangle);
 const isBlueCircle = compose(isBlue, getCircle);
 const isOrangeSquare = compose(isOrange, getSquare);
 const isWhiteCircle = compose(isWhite, getCircle);
 const isWhiteTriangle = compose(isWhite, getTriangle);
+const isOneRed = compose(equalOne, countRed);
 
 // 1. Красная звезда, зеленый квадрат, все остальные белые.
 export const validateFieldN1 = allPass([isRedStar, isGreenSquare, isWhiteCircle, isWhiteTriangle]);
@@ -65,7 +69,7 @@ export const validateFieldN4 = allPass([isBlueCircle, isRedStar, isOrangeSquare]
 export const validateFieldN5 = minTreeSameColor;
 
 // 6. Две зеленые фигуры (одна из них треугольник), еще одна любая красная.
-export const validateFieldN6 = () => false;
+export const validateFieldN6 = allPass([minTwoGreen, isGreenTriangle, isOneRed]);
 
 // 7. Все фигуры оранжевые.
 export const validateFieldN7 = () => false;
