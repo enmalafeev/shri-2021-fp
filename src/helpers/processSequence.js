@@ -26,14 +26,14 @@ const getHandleSuccess = prop('handleSuccess');
 const getHandleError = prop('handleError');
 const getResult = prop('result');
 
-const isGreaterThanTwo = gt(2);
-const isLessThanTen = lt(10);
-const isPositive = gt(0);
+const isGreaterThanTwo = lt(2);
+const isLessThanTen = gt(10);
+const isPositive = lt(0);
 const isFloatNumber = match(/^[0-9]*\.?[0-9]*$/);
 const squareNumber = number => Math.pow(number, 2);
 const moduloTree = number => modulo(number, 3);
 
-const isValidLength = compose(allPass([isGreaterThanTwo, isLessThanTen]), length);
+const isValidLength = compose(allPass([isLessThanTen, isGreaterThanTwo]), length);
 const isValidInput = compose(allPass([isValidLength, isPositive, isFloatNumber]), getValue);
 
 const parseInput = compose(round, parseFloat, getValue);
