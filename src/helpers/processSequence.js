@@ -15,37 +15,64 @@
  * Ответ будет приходить в поле {result}
  */
 import Api from '../tools/api';
+import { allPass, prop, length, gt, lt, match, compose, modulo, ifElse, andThen, otherwise, tap } from 'ramda';
+import { round } from 'lodash';
 
 const api = new Api();
 
-/**
- * Я – пример, удали меня
- */
-const wait = time => new Promise(resolve => {
-    setTimeout(resolve, time);
-})
+const getValue = prop('value');
+const getWriteLog = prop('writeLog');
+const getHandleSuccess = prop('handleSuccess');
+const getHandleError = prop('handleError');
+const getResult = prop('result');
 
-const processSequence = ({value, writeLog, handleSuccess, handleError}) => {
-    /**
-     * Я – пример, удали меня
-     */
-    writeLog(value);
+const isGreaterThanTwo = gt(2);
+const isLessThanTen = lt(10);
+const isPositive = gt(0);
+const isFloatNumber = match(/^[0-9]*\.?[0-9]*$/);
+const squareNumber = number => Math.pow(number, 2);
+const moduloTree = number => modulo(number, 3);
 
-    api.get('https://api.tech/numbers/base', {from: 2, to: 10, number: '01011010101'}).then(({result}) => {
-        writeLog(result);
-    });
+const isValidLength = compose(allPass([isGreaterThanTwo, isLessThanTen]), length);
+const isValidInput = compose(allPass([isValidLength, isPositive, isFloatNumber]), getValue);
 
-    wait(2500).then(() => {
-        writeLog('SecondLog')
+const parseInput = compose(round, parseFloat, getValue);
+const getNumberFromApi = api.get('https://api.tech/numbers/base');
+const convertNumberToBinary = (value) => getNumberFromApi({from: 10, to: 2, number: value});
+const getAnimalById = (id) => api.get(`https://animals.tech/${id}`)({});
 
-        return wait(1500);
-    }).then(() => {
-        writeLog('ThirdLog');
+const logError = (data) => getHandleError(data)('ValidationError');
 
-        return wait(400);
-    }).then(() => {
-        handleSuccess('Done');
-    });
+const processSequence = (input) => {
+    const writeLog = getWriteLog(input);
+    const handleSuccess = getHandleSuccess(input);
+    const logValue = compose(writeLog, getValue);
+
+    const result = compose(
+        ifElse(
+            isValidInput, 
+            compose(
+                otherwise(logError),
+                andThen(handleSuccess),
+                andThen(getResult),
+                andThen(getAnimalById),
+                andThen(tap(writeLog)),
+                andThen(moduloTree),
+                andThen(tap(writeLog)),
+                andThen(squareNumber),
+                andThen(tap(writeLog)),
+                andThen(length),
+                andThen(tap(writeLog)),
+                andThen(getResult),
+                convertNumberToBinary,
+                tap(writeLog),
+                parseInput,
+            ),
+            tap(logError)
+        ),
+        tap(logValue),
+    )
+    result(input);
 }
 
 export default processSequence;

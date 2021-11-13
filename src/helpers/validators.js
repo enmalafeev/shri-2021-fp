@@ -1,4 +1,3 @@
-import { eq } from 'lodash';
 import { allPass, compose, equals, prop, values, filter, gt, all, anyPass, not } from 'ramda';
 
 /**
