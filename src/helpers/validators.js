@@ -1,3 +1,4 @@
+import { eq } from 'lodash';
 import { allPass, compose, equals, prop, values, filter, gt, all, anyPass, not } from 'ramda';
 
 /**
@@ -30,6 +31,7 @@ const isWhite = equals('white');
 const isGreaterThenOne = number => gt(number, 1);
 const isGreateThanTwo = number => gt(number, 2);
 const equalOne = number => equals(number, 1);
+const equalTwo = number => equals(number, 2);
 const countGreen = compose(getLength, filter(isGreen), values);
 const countRed = compose(getLength, filter(isRed), values);
 const countBlue = compose(getLength, filter(isBlue), values);
@@ -38,7 +40,7 @@ const countOrange = compose(getLength, filter(isOrange), values);
 const countBlueIsEqualCountRed = (figures) => equals(countBlue(figures), countRed(figures));
 const squareAndTriangleIsSameColor = (figures) => equals(getSquare(figures), getTriangle(figures));
 
-const minTwoGreen = compose(isGreaterThenOne, countGreen);
+const exactlyTwoGreen = compose(equalTwo, countGreen);
 const minThreeGreen = compose(isGreateThanTwo, countGreen);
 const minThreeRed= compose(isGreateThanTwo, countRed);
 const minThreeBlue = compose(isGreateThanTwo, countBlue);
@@ -73,7 +75,7 @@ export const validateFieldN4 = allPass([isBlueCircle, isRedStar, isOrangeSquare]
 export const validateFieldN5 = minTreeSameColor;
 
 // 6. Две зеленые фигуры (одна из них треугольник), еще одна любая красная.
-export const validateFieldN6 = allPass([minTwoGreen, isGreenTriangle, isOneRed]);
+export const validateFieldN6 = allPass([exactlyTwoGreen, isGreenTriangle, isOneRed]);
 
 // 7. Все фигуры оранжевые.
 export const validateFieldN7 = compose(all(isOrange), values);
